@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>index</title>
+</head>
+<body>
+<h1>main</h1>
+<div shiro.hasPermission="userInfo:view">
+    <a th:href="@{userInfo/userList}">用户</a>
+</div>
+<div shiro.hasPermission="userInfo:add">
+    <a th:href="@{userInfo/userAdd}">添加</a>
+</div>
+<div shiro.hasPermission="userInfo:del">
+    <a th:href="@{userInfo/userDel}">删除</a>
+</div>
+<div>
+    <a th:href="@{logout}">退出</a>
+</div>
+</body>
+</html>

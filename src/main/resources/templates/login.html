@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>login</title>
+</head>
+<body id="all-body">
+<h4 id="msg" th:text="${msg}"></h4>
+<form action="doLogin" method="POST" id="FormLogin">
+
+    <p>账号：<input type="text" name="username" id="form-username" value="admin"/></p>
+
+    <p>密码：<input type="text" name="password" id="form-psw" value="123456"/></p>
+
+    <p>记住：<input type="checkbox" id="form-rememberMe" name="rememberMe"/></p>
+
+    <p><button type="button" onclick="doLogin1()">登陆mav</button></p>
+    <p><button type="button" onclick="doLogin2()">ok登录result</button></p>
+    <p><button type="submit" value="登录 string">登录string</button></p>
+    <p><button type="button" onclick="goMain()">main</button></p>
+    <p><button type="button" onclick="loginOut()">退出</button></p>
+
+</form>
+
+
+<script th:src="@{static/js/jquery.min.js}"></script>
+<script>
+    function doLogin1(){
+        var param = {
+            username:$('#form-username').val()
+            ,password:$('#form-psw').val()
+            ,rememberMe:$('#form-rememberMe').checked==true?true:false
+        };
+        setTimeout(function () {
+            $.ajax({
+                url:'/doLogin1'
+                ,type:'POST'
+                ,data:param
+                ,dataType:'html'
+                ,success:function (data) {
+                    $('#all-body').html(data);
+                }
+            });
+        },0);
+
+    }
+    function doLogin2(){
+        var param = {
+            username:$('#form-username').val()
+            ,password:$('#form-psw').val()
+            ,rememberMe:$('#form-rememberMe').checked==true?true:false
+        };
+        setTimeout(function () {
+            $.ajax({
+                url:'/doLogin2'
+                ,type:'POST'
+                ,data:param
+                ,dataType:'json'
+                ,success:function (data) {
+                    if(data.code == '10000'){
+                        location.href = 'index';
+                    }else {
+                        $('#msg').html(data.msg);
+                    }
+                }
+            });
+        },0);
+
+    }
+    function doLogin(){
+        var param = {
+            username:$('#form-username').val()
+            ,password:$('#form-psw').val()
+            ,rememberMe:$('#form-rememberMe').checked==true?true:false
+        };
+        console.log("string: " + JSON.stringify(param));
+        setTimeout(function () {
+            $.ajax({
+                url:'/doLogin'
+                ,type:'POST'
+                ,data:param
+                ,dataType:'json'
+                ,success:function (data) {
+                    alert(data);
+                }
+            });
+        },0);
+
+    }
+    function goMain() {
+        location.href = 'index';
+    }
+    function loginOut() {
+        location.href = 'logout';
+    }
+</script>
+</body>
+</html>

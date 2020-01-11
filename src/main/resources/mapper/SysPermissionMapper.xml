@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysPermissionMapper">
+
+    <resultMap type="com.yzf.example.entity.SysPermission" id="SysPermissionMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="resourceType" column="resource_type" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="permission" column="permission" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+        <result property="parentIds" column="parent_ids" jdbcType="VARCHAR"/>
+        <result property="available" column="available" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+      id, name, resource_type, url, permission, parent_id, parent_ids, available      
+    </sql>
+
+    <!--分页查询后执行，获取总记录数-->
+    <select id="queryCountAfterLimit" resultType="Integer">
+      SELECT FOUND_ROWS()
+    </select>
+    
+    <!--总记录数-->
+    <select id="count" resultType="Integer">
+      SELECT count(*) from t_sys_permission
+    </select>
+    
+    <!--查询单个-->
+    <select id="queryById" parameterType="com.yzf.example.entity.SysPermission" resultMap="SysPermissionMap">
+        select
+          <include refid="Base_Column_List"></include>
+        from t_sys_permission
+        where id = #{id, jdbcType=INTEGER}
+    </select>
+
+    <!--查询指定行数据（分页）-->
+    <select id="queryAllByLimit" resultMap="SysPermissionMap">
+        select
+           SQL_CALC_FOUND_ROWS <include refid="Base_Column_List"></include>
+        from t_sys_permission
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="getAllPermission" parameterType="Integer" resultMap="SysPermissionMap">
+        select tsp.id, tsp.name, tsp.resource_type, tsp.url, tsp.permission, tsp.parent_id, tsp.parent_ids, tsp.available
+        from t_sys_permission tsp
+        right join t_sys_role_permission tsrp
+        on tsp.id = tsrp.permission_id
+        where tsrp.role_id = #{roleId}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" parameterType="com.yzf.example.entity.SysPermission" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        insert into t_sys_permission
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null and name != ''">name,</if>
+            <if test="resourceType != null and resourceType != ''">resource_type,</if>
+            <if test="url != null and url != ''">url,</if>
+            <if test="permission != null and permission != ''">permission,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="parentIds != null and parentIds != ''">parent_ids,</if>
+            <if test="available != null">available,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="name != null and name != ''">#{name, jdbcType=VARCHAR},</if>
+            <if test="resourceType != null and resourceType != ''">#{resourceType, jdbcType=VARCHAR},</if>
+            <if test="url != null and url != ''">#{url, jdbcType=VARCHAR},</if>
+            <if test="permission != null and permission != ''">#{permission, jdbcType=VARCHAR},</if>
+            <if test="parentId != null">#{parentId, jdbcType=BIGINT},</if>
+            <if test="parentIds != null and parentIds != ''">#{parentIds, jdbcType=VARCHAR},</if>
+            <if test="available != null">#{available, jdbcType=INTEGER},</if>
+        </trim>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update" parameterType="com.yzf.example.entity.SysPermission" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        update t_sys_permission
+        <set>
+            <if test="name != null and name != ''">name = #{name, jdbcType=VARCHAR},</if>
+            <if test="resourceType != null and resourceType != ''">resource_type = #{resourceType, jdbcType=VARCHAR},</if>
+            <if test="url != null and url != ''">url = #{url, jdbcType=VARCHAR},</if>
+            <if test="permission != null and permission != ''">permission = #{permission, jdbcType=VARCHAR},</if>
+            <if test="parentId != null">parent_id = #{parentId, jdbcType=BIGINT},</if>
+            <if test="parentIds != null and parentIds != ''">parent_ids = #{parentIds, jdbcType=VARCHAR},</if>
+            <if test="available != null">available = #{available, jdbcType=INTEGER},</if>
+        </set>
+        where id = #{id, jdbcType=INTEGER}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="delById" parameterType="Integer">
+        delete from t_sys_permission where id = #{id, jdbcType=INTEGER}
+    </delete>
+
+</mapper>
